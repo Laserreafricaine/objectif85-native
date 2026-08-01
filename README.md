@@ -1,12 +1,19 @@
-# Objectif 85 — PWA V2
+# Objectif 85 — PWA V3
 
-Application HTML/CSS/JavaScript directement compatible avec GitHub Pages.
+Version HTML/CSS/JavaScript compatible avec GitHub Pages.
 
-## Publication
-1. Décompresser le ZIP.
-2. Déposer tous les fichiers à la racine du dépôt.
-3. GitHub : Settings → Pages.
-4. Source : Deploy from a branch.
-5. Branche : main, dossier : /(root).
+## Contenu
+- Programme alimentaire sur 28 jours
+- Programme sportif initial restauré
+- Onglet Aujourd’hui
+- Onglet Calendrier mensuel avec aperçu complet
+- Suivi et graphiques
+- Courses indépendantes sous forme de tâches
+- Paramètres
+- Installation PWA
+
+## Publication GitHub Pages
+Déposer tous les fichiers à la racine du dépôt puis :
+Settings → Pages → Deploy from a branch → main → /(root)
 
 Aucune compilation nécessaire.

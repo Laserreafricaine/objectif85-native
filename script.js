@@ -1,5 +1,5 @@
 
-const STORAGE_KEY="objectif85-v2";let selectedDate=new Date();
+const STORAGE_KEY="objectif85-v2";let selectedDate=new Date();let calendarCursor=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),1);let calendarSelectedDate=new Date(selectedDate);
 const defaults={age:48,height:185,currentWeight:93,targetWeight:85,sessions:4,equipment:"Haltères et poids du corps",forbidden:"Porc",budget:""};
 function keyFor(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
 function load(){return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{"days":{},"shopping":{},"settings":{}}')}
@@ -13,7 +13,7 @@ function renderWeek(){const r=document.getElementById("weekStrip");r.innerHTML="
 function renderToday(){renderWeek();const idx=cycleIndex(selectedDate),data=getDay(),names=["Petit-déjeuner","Déjeuner","Collation","Dîner"],icons=["☀","🍗","🥛","🐟"];document.getElementById("cycleLabel").textContent=`JOUR ${idx+1} / 28`;const dl=selectedDate.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});document.getElementById("dateLabel").textContent=dl[0].toUpperCase()+dl.slice(1);document.getElementById("dayScore").textContent=completion(selectedDate)+"%";
 const meals=document.getElementById("mealList");meals.innerHTML="";MEAL_PLAN[idx].forEach((m,i)=>{const row=document.createElement("div");row.className="meal-card";row.innerHTML=`<div class="icon-box">${icons[i]}</div><div><h3>${names[i]}</h3><p>${m}</p></div><button class="check-btn ${data.meals[i]?"done":""}">${data.meals[i]?"✓":""}</button>`;row.querySelector("button").onclick=()=>{const d=getDay();d.meals[i]=!d.meals[i];setDay(d);renderToday()};meals.appendChild(row)});
 const sport=document.getElementById("sportList");sport.innerHTML="";(WORKOUT_PLAN[selectedDate.getDay()]||[]).forEach((t,i)=>{const p=t.split("—"),row=document.createElement("div");row.className="task-row";row.innerHTML=`<div class="icon-box">${i===0?"🚶":"🏋"}</div><div><h3>${p[0].trim()}</h3><p>${p[1]?p[1].trim():""}</p></div><button class="check-btn ${data.sports[i]?"done":""}">${data.sports[i]?"✓":""}</button>`;row.querySelector("button").onclick=()=>{const d=getDay();d.sports[i]=!d.sports[i];setDay(d);renderToday()};sport.appendChild(row)})}
-function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.nav===id));document.getElementById("pageTitle").textContent={todayPage:"Aujourd’hui",trackingPage:"Suivi",shoppingPage:"Courses",settingsPage:"Paramètres"}[id];if(id==="trackingPage")renderTracking();if(id==="shoppingPage")renderShopping();if(id==="settingsPage")renderSettings();scrollTo({top:0,behavior:"smooth"})}
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.nav===id));document.getElementById("pageTitle").textContent={todayPage:"Aujourd’hui",calendarPage:"Calendrier",trackingPage:"Suivi",shoppingPage:"Courses",settingsPage:"Paramètres"}[id];if(id==="calendarPage")renderCalendar();if(id==="trackingPage")renderTracking();if(id==="shoppingPage")renderShopping();if(id==="settingsPage")renderSettings();scrollTo({top:0,behavior:"smooth"})}
 document.querySelectorAll("[data-nav]").forEach(b=>b.onclick=()=>showPage(b.dataset.nav));document.getElementById("todayBtn").onclick=()=>{selectedDate=new Date();showPage("todayPage");renderToday()};
 const trackFields=[["weight","Poids (kg)","0.1"],["waist","Tour de taille (cm)","0.1"],["steps","Pas","1"],["water","Eau (L)","0.1"],["protein","Protéines (g)","1"],["sleep","Sommeil (h)","0.25"]];
 function renderTracking(){const d=getDay(),f=document.getElementById("trackingForm");f.innerHTML="";trackFields.forEach(([k,l,s])=>{const x=document.createElement("div");x.className="field";x.innerHTML=`<label>${l}</label><input type="number" step="${s}" data-key="${k}" value="${d[k]||""}">`;f.appendChild(x)});updateSummary()}
@@ -26,5 +26,49 @@ document.getElementById("resetShopping").onclick=()=>{if(confirm("Réinitialiser
 const settingFields=[["age","Âge","number"],["height","Taille (cm)","number"],["currentWeight","Poids actuel (kg)","number"],["targetWeight","Poids cible (kg)","number"],["sessions","Séances par semaine","number"],["equipment","Matériel disponible","text"],["forbidden","Aliments interdits","text"],["budget","Budget mensuel (€)","number"]];
 function renderSettings(){const s={...defaults,...(load().settings||{})},r=document.getElementById("settingsForm");r.innerHTML="";settingFields.forEach(([k,l,t])=>{const f=document.createElement("div");f.className="field";f.innerHTML=`<label>${l}</label><input data-key="${k}" type="${t}" value="${s[k]||""}">`;r.appendChild(f)})}
 document.getElementById("saveSettings").onclick=()=>{const s=load();s.settings=s.settings||{};document.querySelectorAll("#settingsForm input").forEach(i=>s.settings[i.dataset.key]=i.type==="number"?Number(i.value):i.value);save(s);alert("Paramètres enregistrés.")};
+
+function calendarDayLabel(date){
+  const day=date.getDay();
+  if(day===1)return"Haut du corps";
+  if(day===2)return"Jambes + abdos";
+  if(day===4)return"Haut du corps 2";
+  if(day===5)return"Full body";
+  return"Marche";
+}
+function renderCalendar(){
+  const title=calendarCursor.toLocaleDateString("fr-FR",{month:"long",year:"numeric"});
+  document.getElementById("calendarMonthTitle").textContent=title.charAt(0).toUpperCase()+title.slice(1);
+  const grid=document.getElementById("calendarGrid");grid.innerHTML="";
+  const first=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),1);
+  const leading=(first.getDay()+6)%7;
+  for(let i=0;i<leading;i++){const e=document.createElement("div");e.className="calendar-day empty";grid.appendChild(e)}
+  const count=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,0).getDate();
+  for(let n=1;n<=count;n++){
+    const date=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth(),n);
+    const b=document.createElement("button");b.className="calendar-day";
+    if(keyFor(date)===keyFor(new Date()))b.classList.add("today");
+    if(keyFor(date)===keyFor(calendarSelectedDate))b.classList.add("selected");
+    const score=completion(date);
+    b.innerHTML=`<strong>${n}</strong><small>J${cycleIndex(date)+1} · ${calendarDayLabel(date)}</small><div class="calendar-day-status"><i style="background:${score===100?"#52b85a":score>0?"#ff8a27":"#697482"}"></i><i style="background:#e8b85e"></i></div>`;
+    b.addEventListener("click",()=>{calendarSelectedDate=date;renderCalendar();renderCalendarDetail()});
+    grid.appendChild(b);
+  }
+  renderCalendarDetail();
+}
+function renderCalendarDetail(){
+  const idx=cycleIndex(calendarSelectedDate);
+  const label=calendarSelectedDate.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  document.getElementById("calendarCycleDay").textContent=`JOUR ${idx+1} / 28`;
+  document.getElementById("calendarDetailTitle").textContent=label.charAt(0).toUpperCase()+label.slice(1);
+  const mealNames=["Petit-déjeuner","Déjeuner","Collation","Dîner"];
+  document.getElementById("calendarMeals").innerHTML=MEAL_PLAN[idx].map((m,i)=>`<div class="calendar-preview-item"><strong>${mealNames[i]}</strong><span>${m}</span></div>`).join("");
+  document.getElementById("calendarWorkout").innerHTML=(WORKOUT_PLAN[calendarSelectedDate.getDay()]||[]).map(x=>{
+    const p=x.split("—");return`<div class="calendar-preview-item"><strong>${p[0].trim()}</strong><span>${p[1]?p[1].trim():""}</span></div>`
+  }).join("");
+}
+document.getElementById("calendarPrev").addEventListener("click",()=>{calendarCursor.setMonth(calendarCursor.getMonth()-1);renderCalendar()});
+document.getElementById("calendarNext").addEventListener("click",()=>{calendarCursor.setMonth(calendarCursor.getMonth()+1);renderCalendar()});
+document.getElementById("openSelectedDay").addEventListener("click",()=>{selectedDate=new Date(calendarSelectedDate);showPage("todayPage");renderToday()});
+
 if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));
 renderToday();

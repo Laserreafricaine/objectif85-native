@@ -29,6 +29,42 @@
 <button class="primary-action" data-nav="trackingPage"><span>Voir mon suivi</span><b>→</b></button>
 </section>
 
+
+<section id="calendarPage" class="page">
+<section class="hero compact">
+<div><span>PROGRAMME COMPLET</span><h2>Calendrier des 28 jours</h2><p>Visualise tous les repas et toutes les séances du cycle.</p></div>
+</section>
+
+<section class="section calendar-section">
+<div class="calendar-toolbar">
+<button id="calendarPrev" class="calendar-nav-btn">‹</button>
+<div><span id="calendarMonthLabel" class="eyebrow">MOIS</span><h2 id="calendarMonthTitle"></h2></div>
+<button id="calendarNext" class="calendar-nav-btn">›</button>
+</div>
+<div class="calendar-weekdays">
+<span>LUN</span><span>MAR</span><span>MER</span><span>JEU</span><span>VEN</span><span>SAM</span><span>DIM</span>
+</div>
+<div id="calendarGrid" class="calendar-grid"></div>
+</section>
+
+<section id="calendarDetail" class="section calendar-detail">
+<div class="calendar-detail-head">
+<div><span id="calendarCycleDay" class="eyebrow">JOUR 1 / 28</span><h2 id="calendarDetailTitle">Sélectionne une journée</h2></div>
+<button id="openSelectedDay" class="small-gold-btn">Ouvrir</button>
+</div>
+<div class="calendar-detail-columns">
+<div>
+<h3>Repas</h3>
+<div id="calendarMeals"></div>
+</div>
+<div>
+<h3>Entraînement</h3>
+<div id="calendarWorkout"></div>
+</div>
+</div>
+</section>
+</section>
+
 <section id="trackingPage" class="page">
 <section class="hero compact"><div><span>PROGRESSION</span><h2>Suivi personnel</h2><p>Enregistre tes données et observe ton évolution.</p></div></section>
 <section class="section"><h2>Entrée du jour</h2><div class="form-grid" id="trackingForm"></div><button class="gold-btn" id="saveTracking">Enregistrer</button></section>
@@ -60,6 +96,7 @@
 </main>
 <nav class="bottom-nav">
 <button data-nav="todayPage" class="active"><span>⌂</span><small>Aujourd’hui</small></button>
+<button data-nav="calendarPage"><span>▦</span><small>Calendrier</small></button>
 <button data-nav="trackingPage"><span>↗</span><small>Suivi</small></button>
 <button data-nav="shoppingPage"><span>🛒</span><small>Courses</small></button>
 <button data-nav="settingsPage"><span>⚙</span><small>Paramètres</small></button>
