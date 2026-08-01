@@ -1,7 +1,7 @@
 {
-  "name": "Objectif 85",
+  "name": "Objectif 85 — V1",
   "short_name": "Objectif85",
-  "description": "Coach sport, nutrition, suivi et courses sur 28 jours.",
+  "description": "Programme sport, nutrition, évolution en photos et courses sur 28 jours.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

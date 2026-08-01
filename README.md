@@ -1,25 +1,16 @@
-# Objectif 85 — V4
+# Objectif 85 — V1 finale
 
-Application PWA HTML/CSS/JavaScript sans compilation.
+PWA HTML/CSS/JavaScript sans compilation.
 
-## V4
-- Objectif personnel 93 kg → 85 kg
-- Repas différents pendant 28 jours
-- Programme sportif organisé selon la semaine
-- 4 séances de renforcement : mardi, jeudi, samedi et dimanche
-- Récupération active : lundi, mercredi et vendredi
-- Pas minimum et idéal
-- Séries, répétitions, charges conseillées et repos
-- Saisie des répétitions par série
-- Historique des performances
-- Calendrier mensuel avec aperçu complet
-- Suivi corporel et graphiques
-- Liste de courses indépendante
+## Modules
+- Aujourd'hui
+- Calendrier
+- Évolution : photos Face/Profil/Dos, frise, avant/après, mesures, graphiques et performances
+- Courses indépendantes
 - Paramètres
 
+Les données et photos compressées restent dans le navigateur du téléphone.
+
 ## GitHub Pages
-Déposer le contenu du ZIP à la racine du dépôt.
-
+Déposer tous les fichiers à la racine du dépôt :
 Settings → Pages → Deploy from a branch → main → /(root)
-
-Aucune compilation nécessaire.

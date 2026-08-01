@@ -45,7 +45,7 @@
 <div id="sportList"></div>
 </section>
 
-<button class="primary-action" data-nav="trackingPage"><span>Voir mon suivi</span><b>→</b></button>
+<button class="primary-action" data-nav="evolutionPage"><span>Voir mon suivi</span><b>→</b></button>
 </section>
 
 <section id="calendarPage" class="page">
@@ -61,8 +61,55 @@
 </section>
 </section>
 
-<section id="trackingPage" class="page">
-<section class="hero compact"><div><span>PROGRESSION</span><h2>Suivi personnel</h2><p>Mesures corporelles, habitudes et performances sportives.</p></div></section>
+<section id="evolutionPage" class="page">
+<section class="hero compact"><div><span>PROGRESSION</span><h2>Mon évolution</h2><p>Photos, mesures corporelles et performances sportives.</p></div></section>
+
+<section class="section photo-section">
+  <div class="section-head">
+    <div><span class="eyebrow">PHOTOS</span><h2>Photos d’évolution</h2></div>
+    <span class="cycle-badge">Face · Profil · Dos</span>
+  </div>
+  <p class="muted photo-help">Prends les photos le matin, avec la même lumière, la même distance et la même tenue.</p>
+  <div class="photo-capture-grid">
+    <label class="photo-capture-card">
+      <input type="file" accept="image/*" capture="environment" data-photo-type="face">
+      <span class="photo-symbol">◉</span><strong>Face</strong><small>Ajouter une photo</small>
+    </label>
+    <label class="photo-capture-card">
+      <input type="file" accept="image/*" capture="environment" data-photo-type="profil">
+      <span class="photo-symbol">◐</span><strong>Profil</strong><small>Ajouter une photo</small>
+    </label>
+    <label class="photo-capture-card">
+      <input type="file" accept="image/*" capture="environment" data-photo-type="dos">
+      <span class="photo-symbol">◎</span><strong>Dos</strong><small>Ajouter une photo</small>
+    </label>
+  </div>
+  <div class="photo-message" id="photoMessage" aria-live="polite"></div>
+  <h3 class="subheading">Frise chronologique</h3>
+  <div class="photo-timeline" id="photoTimeline"></div>
+</section>
+
+<section class="section compare-section">
+  <div class="section-head">
+    <div><span class="eyebrow orange">AVANT / APRÈS</span><h2>Comparer mes photos</h2></div>
+  </div>
+  <div class="compare-controls">
+    <label><span>Vue</span><select id="compareType"><option value="face">Face</option><option value="profil">Profil</option><option value="dos">Dos</option></select></label>
+    <label><span>Avant</span><select id="compareBefore"></select></label>
+    <label><span>Après</span><select id="compareAfter"></select></label>
+  </div>
+  <div class="compare-grid">
+    <figure class="compare-photo">
+      <div class="photo-placeholder" id="beforePlaceholder">Aucune photo</div>
+      <img id="beforeImage" alt="Photo avant"><figcaption id="beforeCaption">Avant</figcaption>
+    </figure>
+    <figure class="compare-photo">
+      <div class="photo-placeholder" id="afterPlaceholder">Aucune photo</div>
+      <img id="afterImage" alt="Photo après"><figcaption id="afterCaption">Après</figcaption>
+    </figure>
+  </div>
+</section>
+
 <section class="section"><h2>Entrée du jour</h2><div class="form-grid" id="trackingForm"></div><button class="gold-btn" id="saveTracking">Enregistrer</button></section>
 <section class="metrics-grid">
 <div class="metric"><span>Poids actuel</span><strong id="currentWeight">93 kg</strong><small>Objectif 85 kg</small></div>
@@ -92,7 +139,7 @@
 <nav class="bottom-nav">
 <button data-nav="todayPage" class="active"><span>⌂</span><small>Aujourd’hui</small></button>
 <button data-nav="calendarPage"><span>▦</span><small>Calendrier</small></button>
-<button data-nav="trackingPage"><span>↗</span><small>Suivi</small></button>
+<button data-nav="evolutionPage"><span>↗</span><small>Évolution</small></button>
 <button data-nav="shoppingPage"><span>🛒</span><small>Courses</small></button>
 <button data-nav="settingsPage"><span>⚙</span><small>Paramètres</small></button>
 </nav>

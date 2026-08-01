@@ -1,5 +1,5 @@
 
-const STORAGE_KEY="objectif85-v4";
+const STORAGE_KEY="objectif85-v1-finale";
 let selectedDate=new Date();
 let calendarCursor=new Date(selectedDate.getFullYear(),selectedDate.getMonth(),1);
 let calendarSelectedDate=new Date(selectedDate);
@@ -109,8 +109,8 @@ function savePerformance(ex,index,dayData){
 function showPage(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");
   document.querySelectorAll(".bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.nav===id));
-  document.getElementById("pageTitle").textContent={todayPage:"Aujourd’hui",calendarPage:"Calendrier",trackingPage:"Suivi",shoppingPage:"Courses",settingsPage:"Paramètres"}[id];
-  if(id==="calendarPage")renderCalendar();if(id==="trackingPage")renderTracking();if(id==="shoppingPage")renderShopping();if(id==="settingsPage")renderSettings();
+  document.getElementById("pageTitle").textContent={todayPage:"Aujourd’hui",calendarPage:"Calendrier",evolutionPage:"Évolution",shoppingPage:"Courses",settingsPage:"Paramètres"}[id];
+  if(id==="calendarPage")renderCalendar();if(id==="evolutionPage"){renderTracking();renderPhotos();}if(id==="shoppingPage")renderShopping();if(id==="settingsPage")renderSettings();
   scrollTo({top:0,behavior:"smooth"});
 }
 document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.nav)));
@@ -174,6 +174,104 @@ function renderCalendarDetail(){
 document.getElementById("calendarPrev").addEventListener("click",()=>{calendarCursor.setMonth(calendarCursor.getMonth()-1);renderCalendar()});
 document.getElementById("calendarNext").addEventListener("click",()=>{calendarCursor.setMonth(calendarCursor.getMonth()+1);renderCalendar()});
 document.getElementById("openSelectedDay").addEventListener("click",()=>{selectedDate=new Date(calendarSelectedDate);showPage("todayPage");renderToday()});
+
+
+function photoStore(){
+  const state=load();
+  state.photos=state.photos||[];
+  return state;
+}
+function formatPhotoDate(iso){
+  return new Date(iso+"T12:00:00").toLocaleDateString("fr-FR",{day:"numeric",month:"short",year:"numeric"});
+}
+function photoTypeLabel(type){return{face:"Face",profil:"Profil",dos:"Dos"}[type]||type}
+function compressPhoto(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error("Lecture impossible"));
+    reader.onload=()=>{
+      const img=new Image();
+      img.onerror=()=>reject(new Error("Image invalide"));
+      img.onload=()=>{
+        const max=900,ratio=Math.min(1,max/Math.max(img.width,img.height));
+        const canvas=document.createElement("canvas");
+        canvas.width=Math.max(1,Math.round(img.width*ratio));
+        canvas.height=Math.max(1,Math.round(img.height*ratio));
+        canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL("image/jpeg",0.72));
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+async function addPhoto(type,file){
+  const message=document.getElementById("photoMessage");
+  message.textContent="Préparation de la photo…";
+  try{
+    const dataUrl=await compressPhoto(file),state=photoStore(),date=keyFor(selectedDate);
+    state.photos.push({id:Date.now()+"-"+Math.random().toString(16).slice(2),date,type,dataUrl,createdAt:new Date().toISOString()});
+    save(state);
+    message.textContent=`Photo ${photoTypeLabel(type).toLowerCase()} enregistrée pour le ${formatPhotoDate(date)}.`;
+    renderPhotos();
+  }catch(e){message.textContent="La photo n’a pas pu être enregistrée."}
+}
+function removePhoto(id){
+  if(!confirm("Supprimer cette photo ?"))return;
+  const state=photoStore();state.photos=state.photos.filter(p=>p.id!==id);save(state);renderPhotos();
+}
+function renderPhotos(){
+  const timeline=document.getElementById("photoTimeline");
+  if(!timeline)return;
+  const photos=[...photoStore().photos].sort((a,b)=>b.date.localeCompare(a.date)||b.createdAt.localeCompare(a.createdAt));
+  timeline.innerHTML=photos.length?photos.map(p=>`
+    <article class="photo-entry">
+      <img src="${p.dataUrl}" alt="Photo ${photoTypeLabel(p.type)} du ${formatPhotoDate(p.date)}">
+      <strong>${photoTypeLabel(p.type)}</strong><small>${formatPhotoDate(p.date)}</small>
+      <button type="button" data-delete-photo="${p.id}">Supprimer</button>
+    </article>`).join(""):'<div class="empty-timeline">Aucune photo enregistrée. Commence par une photo de face, de profil et de dos.</div>';
+  timeline.querySelectorAll("[data-delete-photo]").forEach(b=>b.addEventListener("click",()=>removePhoto(b.dataset.deletePhoto)));
+  renderCompareOptions();
+}
+function renderCompareOptions(){
+  const type=document.getElementById("compareType")?.value||"face";
+  const photos=photoStore().photos.filter(p=>p.type===type).sort((a,b)=>a.date.localeCompare(b.date)||a.createdAt.localeCompare(b.createdAt));
+  const before=document.getElementById("compareBefore"),after=document.getElementById("compareAfter");
+  if(!before||!after)return;
+  const oldBefore=before.value,oldAfter=after.value;
+  const options=photos.map(p=>`<option value="${p.id}">${formatPhotoDate(p.date)}</option>`).join("");
+  before.innerHTML=options||'<option value="">Aucune photo</option>';
+  after.innerHTML=options||'<option value="">Aucune photo</option>';
+  if(photos.length){
+    before.value=photos.some(p=>p.id===oldBefore)?oldBefore:photos[0].id;
+    after.value=photos.some(p=>p.id===oldAfter)?oldAfter:photos.at(-1).id;
+  }
+  renderComparison();
+}
+function renderComparison(){
+  const photos=photoStore().photos;
+  setComparePhoto("before",photos.find(p=>p.id===document.getElementById("compareBefore")?.value));
+  setComparePhoto("after",photos.find(p=>p.id===document.getElementById("compareAfter")?.value));
+}
+function setComparePhoto(prefix,photo){
+  const img=document.getElementById(prefix+"Image"),placeholder=document.getElementById(prefix+"Placeholder"),caption=document.getElementById(prefix+"Caption");
+  if(!img||!placeholder||!caption)return;
+  if(photo){
+    img.src=photo.dataUrl;img.style.display="block";placeholder.style.display="none";
+    caption.textContent=`${prefix==="before"?"Avant":"Après"} · ${formatPhotoDate(photo.date)}`;
+  }else{
+    img.removeAttribute("src");img.style.display="none";placeholder.style.display="flex";
+    caption.textContent=prefix==="before"?"Avant":"Après";
+  }
+}
+document.querySelectorAll("[data-photo-type]").forEach(input=>input.addEventListener("change",event=>{
+  const file=event.target.files?.[0];
+  if(file)addPhoto(event.target.dataset.photoType,file);
+  event.target.value="";
+}));
+document.getElementById("compareType")?.addEventListener("change",renderCompareOptions);
+document.getElementById("compareBefore")?.addEventListener("change",renderComparison);
+document.getElementById("compareAfter")?.addEventListener("change",renderComparison);
 
 if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));
 renderToday();
