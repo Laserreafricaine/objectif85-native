@@ -1,16 +1,15 @@
-# Objectif 85 — V1 finale
+# Objectif 85 — V1.1 stabilisée
 
-PWA HTML/CSS/JavaScript sans compilation.
+Application PWA HTML/CSS/JavaScript, sans compilation.
 
-## Modules
-- Aujourd'hui
-- Calendrier
-- Évolution : photos Face/Profil/Dos, frise, avant/après, mesures, graphiques et performances
-- Courses indépendantes
-- Paramètres
-
-Les données et photos compressées restent dans le navigateur du téléphone.
+## Corrections V1.1
+- Photos : le sélecteur du téléphone permet caméra ou galerie.
+- Affichage verrouillé à l’échelle de l’écran.
+- Pas de zoom, dézoom ou zoom automatique des champs sur iPhone.
+- Aucun débordement horizontal.
+- Titres dynamiques dans l’en-tête et le titre de la page.
+- Données existantes conservées avec la même clé de stockage local.
 
 ## GitHub Pages
 Déposer tous les fichiers à la racine du dépôt :
-Settings → Pages → Deploy from a branch → main → /(root)
+Settings → Pages → Deploy from a branch → main → /(root).

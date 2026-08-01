@@ -1,7 +1,7 @@
 {
-  "name": "Objectif 85 — V1",
+  "name": "Objectif 85 — V1.1",
   "short_name": "Objectif85",
-  "description": "Programme sport, nutrition, évolution en photos et courses sur 28 jours.",
+  "description": "Version stabilisée : évolution, photos caméra ou galerie, affichage mobile fixe.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
