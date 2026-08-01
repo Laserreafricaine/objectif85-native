@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Objectif 85",
+    "slug": "objectif85",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#05090D"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.mandiayediallo.objectif85"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#05090D"
+      },
+      "package": "com.mandiayediallo.objectif85"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
