@@ -1,6 +1,7 @@
 {
   "name": "Objectif 85",
   "short_name": "Objectif85",
+  "description": "Coach sport, nutrition, suivi et courses sur 28 jours.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
