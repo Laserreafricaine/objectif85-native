@@ -1,15 +1,14 @@
-# Objectif 85 — V1.1 stabilisée
+# Objectif 85 — V1.1 corrigée
 
-Application PWA HTML/CSS/JavaScript, sans compilation.
+## Corrections
+- Le grand titre utilise maintenant le dernier poids enregistré :
+  `95 kg → 85 kg`, par exemple.
+- Le poids actuel, le poids restant et la barre de progression restent synchronisés.
+- Les photos peuvent être prises avec la caméra ou choisies dans la galerie.
+- Le zoom et le dézoom de la page sont désactivés.
+- Les champs restent à 16 px minimum pour empêcher le zoom automatique sur iPhone.
+- Les débordements horizontaux sont bloqués.
+- Le cache PWA est renouvelé pour forcer la récupération de cette version.
 
-## Corrections V1.1
-- Photos : le sélecteur du téléphone permet caméra ou galerie.
-- Affichage verrouillé à l’échelle de l’écran.
-- Pas de zoom, dézoom ou zoom automatique des champs sur iPhone.
-- Aucun débordement horizontal.
-- Titres dynamiques dans l’en-tête et le titre de la page.
-- Données existantes conservées avec la même clé de stockage local.
-
-## GitHub Pages
-Déposer tous les fichiers à la racine du dépôt :
-Settings → Pages → Deploy from a branch → main → /(root).
+## Mise à jour GitHub Pages
+Remplacer tous les anciens fichiers par le contenu de ce dossier, à la racine du dépôt.

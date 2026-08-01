@@ -46,8 +46,11 @@ function renderObjective(){
   const s=settings(),current=latestMetric("weight",s.currentWeight);
   const total=s.currentWeight-s.targetWeight,done=s.currentWeight-current;
   const pct=Math.max(0,Math.min(100,total?done/total*100:0));
+  const currentText=current.toFixed(1).replace(".0","");
+  const targetText=Number(s.targetWeight).toFixed(1).replace(".0","");
+  document.getElementById("objectiveTitle").textContent=`${currentText} kg → ${targetText} kg`;
   document.getElementById("objectiveProgress").style.width=pct+"%";
-  document.getElementById("objectiveCurrent").textContent=current.toFixed(1).replace(".0","")+" kg";
+  document.getElementById("objectiveCurrent").textContent=currentText+" kg";
   document.getElementById("objectiveRemaining").textContent=Math.max(0,current-s.targetWeight).toFixed(1).replace(".0","")+" kg à perdre";
 }
 function renderGoals(){
@@ -109,9 +112,7 @@ function savePerformance(ex,index,dayData){
 function showPage(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(id).classList.add("active");
   document.querySelectorAll(".bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.nav===id));
-  const pageLabel={todayPage:"Aujourd’hui",calendarPage:"Calendrier",evolutionPage:"Évolution",shoppingPage:"Courses",settingsPage:"Paramètres"}[id]||"Objectif 85";
-  document.getElementById("pageTitle").textContent=pageLabel;
-  document.title=`${pageLabel} — Objectif 85`;
+  document.getElementById("pageTitle").textContent={todayPage:"Aujourd’hui",calendarPage:"Calendrier",evolutionPage:"Évolution",shoppingPage:"Courses",settingsPage:"Paramètres"}[id];
   if(id==="calendarPage")renderCalendar();if(id==="evolutionPage"){renderTracking();renderPhotos();}if(id==="shoppingPage")renderShopping();if(id==="settingsPage")renderSettings();
   scrollTo({top:0,behavior:"smooth"});
 }
@@ -274,19 +275,6 @@ document.querySelectorAll("[data-photo-type]").forEach(input=>input.addEventList
 document.getElementById("compareType")?.addEventListener("change",renderCompareOptions);
 document.getElementById("compareBefore")?.addEventListener("change",renderComparison);
 document.getElementById("compareAfter")?.addEventListener("change",renderComparison);
-
-// Empêche le zoom par pincement et le zoom par double toucher sur iOS.
-["gesturestart","gesturechange","gestureend"].forEach(type=>{
-  document.addEventListener(type,event=>event.preventDefault(),{passive:false});
-});
-let lastTouchEnd=0;
-document.addEventListener("touchend",event=>{
-  const now=Date.now();
-  if(now-lastTouchEnd<=300)event.preventDefault();
-  lastTouchEnd=now;
-},{passive:false});
-document.getElementById("pageTitle").textContent="Aujourd’hui";
-document.title="Aujourd’hui — Objectif 85";
 
 if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));
 renderToday();

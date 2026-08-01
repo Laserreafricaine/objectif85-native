@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#07090d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -25,7 +25,7 @@
 <section class="hero objective-hero">
 <div>
 <span>MISSION PERSONNELLE</span>
-<h2>93 kg → 85 kg</h2>
+<h2 id="objectiveTitle">93 kg → 85 kg</h2>
 <p>Perdre le ventre, conserver les muscles et redessiner la silhouette.</p>
 <div class="objective-bar"><span id="objectiveProgress"></span></div>
 <div class="objective-meta"><b id="objectiveCurrent">93 kg</b><small id="objectiveRemaining">8 kg à perdre</small></div>
@@ -45,7 +45,7 @@
 <div id="sportList"></div>
 </section>
 
-<button class="primary-action" data-nav="evolutionPage"><span>Voir mon évolution</span><b>→</b></button>
+<button class="primary-action" data-nav="evolutionPage"><span>Voir mon suivi</span><b>→</b></button>
 </section>
 
 <section id="calendarPage" class="page">
@@ -73,15 +73,15 @@
   <div class="photo-capture-grid">
     <label class="photo-capture-card">
       <input type="file" accept="image/*" data-photo-type="face">
-      <span class="photo-symbol">◉</span><strong>Face</strong><small>Caméra ou galerie</small>
+      <span class="photo-symbol">◉</span><strong>Face</strong><small>Ajouter une photo</small>
     </label>
     <label class="photo-capture-card">
       <input type="file" accept="image/*" data-photo-type="profil">
-      <span class="photo-symbol">◐</span><strong>Profil</strong><small>Caméra ou galerie</small>
+      <span class="photo-symbol">◐</span><strong>Profil</strong><small>Ajouter une photo</small>
     </label>
     <label class="photo-capture-card">
       <input type="file" accept="image/*" data-photo-type="dos">
-      <span class="photo-symbol">◎</span><strong>Dos</strong><small>Caméra ou galerie</small>
+      <span class="photo-symbol">◎</span><strong>Dos</strong><small>Ajouter une photo</small>
     </label>
   </div>
   <div class="photo-message" id="photoMessage" aria-live="polite"></div>

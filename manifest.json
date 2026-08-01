@@ -1,7 +1,7 @@
 {
   "name": "Objectif 85 — V1.1",
   "short_name": "Objectif85",
-  "description": "Version stabilisée : évolution, photos caméra ou galerie, affichage mobile fixe.",
+  "description": "Version corrigée : poids dynamique, galerie ou caméra et affichage mobile verrouillé.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
