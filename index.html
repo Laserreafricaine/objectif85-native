@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#080b10" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Objectif 85" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+  <link rel="icon" href="assets/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Objectif 85</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="icon-button" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <div class="today-title">
+        <strong id="dayTitle">JEUDI</strong>
+        <span id="dateTitle">9 MAI</span>
+      </div>
+
+      <button class="icon-button bell" aria-label="Notifications">
+        <img src="assets/bell.svg" alt="" />
+        <i></i>
+      </button>
+    </header>
+
+    <main>
+      <section class="week-strip" id="weekStrip"></section>
+
+      <section class="panel meals-panel">
+        <div class="panel-title">
+          <img src="assets/meal.svg" alt="" />
+          <h2>REPAS DU JOUR</h2>
+        </div>
+        <div class="meal-grid" id="mealGrid"></div>
+      </section>
+
+      <section class="panel sport-panel">
+        <div class="panel-title panel-title-space">
+          <div class="panel-title-left">
+            <img src="assets/dumbbell.svg" alt="" />
+            <h2>SPORT / ACTIVITÉ DU JOUR</h2>
+          </div>
+          <button class="dots-button" aria-label="Options">•••</button>
+        </div>
+        <div id="sportList"></div>
+      </section>
+
+      <section class="stats-panel" id="statsPanel">
+        <button class="stat-card" data-field="weight">
+          <img src="assets/weight.svg" alt="" />
+          <span>POIDS</span>
+          <strong id="weightValue">93 kg</strong>
+          <small>Modifier</small>
+        </button>
+        <button class="stat-card" data-field="waist">
+          <img src="assets/waist.svg" alt="" />
+          <span>TOUR DE TAILLE</span>
+          <strong id="waistValue">97 cm</strong>
+          <small>Modifier</small>
+        </button>
+        <button class="stat-card" data-field="water">
+          <img src="assets/water.svg" alt="" />
+          <span>EAU</span>
+          <strong id="waterValue">0 / 2 L</strong>
+          <small>Modifier</small>
+        </button>
+        <button class="stat-card" data-field="protein">
+          <img src="assets/protein.svg" alt="" />
+          <span>PROTÉINES</span>
+          <strong id="proteinValue">0 / 150 g</strong>
+          <small>Modifier</small>
+        </button>
+        <button class="stat-card" data-field="sleep">
+          <img src="assets/sleep.svg" alt="" />
+          <span>SOMMEIL</span>
+          <strong id="sleepValue">0 h</strong>
+          <small>Modifier</small>
+        </button>
+      </section>
+
+      <section class="notes-box">
+        <img src="assets/notes.svg" alt="" />
+        <input id="notesInput" type="text" placeholder="Notes du jour..." />
+      </section>
+
+      <button class="tracking-button" id="trackingButton">
+        <img src="assets/tracking.svg" alt="" />
+        <span>SUIVI</span>
+        <b>›</b>
+      </button>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="dataModal" aria-hidden="true">
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose" aria-label="Fermer">×</button>
+      <h2 id="modalTitle">Modifier</h2>
+      <label id="modalLabel" for="modalInput">Valeur</label>
+      <input id="modalInput" type="number" step="0.1" />
+      <button id="modalSave">Enregistrer</button>
+    </div>
+  </div>
+
+  <section class="tracking-view hidden" id="trackingView">
+    <div class="tracking-header">
+      <button id="backButton" class="back-button">←</button>
+      <h1>Suivi</h1>
+      <span></span>
+    </div>
+
+    <div class="tracking-tabs">
+      <button class="active">ENTRÉE</button>
+      <button>PROGRESSION</button>
+      <button>STATISTIQUES</button>
+    </div>
+
+    <div class="tracking-content">
+      <h2>Enregistrer mes données</h2>
+      <div class="tracking-form" id="trackingForm"></div>
+      <button class="save-tracking" id="saveTracking">ENREGISTRER</button>
+
+      <h2 class="tracking-subtitle">Mes données de suivi</h2>
+
+      <div class="period-tabs">
+        <button>7J</button>
+        <button class="active">30J</button>
+        <button>3M</button>
+        <button>1A</button>
+        <button>Tout</button>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">
+          <span>Évolution du poids (kg)</span>
+          <strong id="weightDelta">0 kg</strong>
+        </div>
+        <svg id="weightChart" viewBox="0 0 360 160" role="img" aria-label="Évolution du poids"></svg>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">
+          <span>Tour de taille (cm)</span>
+          <strong id="waistDelta">0 cm</strong>
+        </div>
+        <svg id="waistChart" viewBox="0 0 360 160" role="img" aria-label="Évolution du tour de taille"></svg>
+      </div>
+
+      <div class="mini-grid">
+        <div class="mini-card">
+          <span>Pas moyens / jour</span>
+          <strong id="avgSteps">0</strong>
+        </div>
+        <div class="mini-card">
+          <span>Sommeil moyen</span>
+          <strong id="avgSleep">0 h</strong>
+        </div>
+      </div>
+
+      <div class="success-box">
+        <img src="assets/trophy.svg" alt="" />
+        <div>
+          <strong>Bravo !</strong>
+          <span>Tu es sur la bonne voie. Continue comme ça !</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
