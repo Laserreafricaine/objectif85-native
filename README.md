@@ -1,13 +1,12 @@
-# Objectif 85
+# Objectif 85 — PWA V2
 
-Application PWA de suivi sportif et alimentaire.
+Application HTML/CSS/JavaScript directement compatible avec GitHub Pages.
 
-## Mise en ligne sur GitHub Pages
+## Publication
+1. Décompresser le ZIP.
+2. Déposer tous les fichiers à la racine du dépôt.
+3. GitHub : Settings → Pages.
+4. Source : Deploy from a branch.
+5. Branche : main, dossier : /(root).
 
-1. Déposer tous les fichiers à la racine du dépôt.
-2. Aller dans `Settings > Pages`.
-3. Choisir `Deploy from a branch`.
-4. Sélectionner `main` et `/(root)`.
-5. Enregistrer.
-
-Aucune compilation n'est nécessaire.
+Aucune compilation nécessaire.

@@ -1,12 +1,11 @@
 {
   "name": "Objectif 85",
   "short_name": "Objectif85",
-  "description": "Suivi quotidien sport, alimentation et progression.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#05080c",
-  "theme_color": "#080b10",
+  "background_color": "#06080c",
+  "theme_color": "#07090d",
   "orientation": "portrait",
   "icons": [
     {
