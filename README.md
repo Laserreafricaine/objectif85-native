@@ -1,14 +1,15 @@
-# Objectif 85 — V1.1 corrigée
+# Objectif 85 — V2
 
-## Corrections
-- Le grand titre utilise maintenant le dernier poids enregistré :
-  `95 kg → 85 kg`, par exemple.
-- Le poids actuel, le poids restant et la barre de progression restent synchronisés.
-- Les photos peuvent être prises avec la caméra ou choisies dans la galerie.
-- Le zoom et le dézoom de la page sont désactivés.
-- Les champs restent à 16 px minimum pour empêcher le zoom automatique sur iPhone.
-- Les débordements horizontaux sont bloqués.
-- Le cache PWA est renouvelé pour forcer la récupération de cette version.
+## Nouveautés
+- Tableau de bord calories, protéines, eau et pas
+- Journal alimentaire par repas
+- Ajout manuel des calories et macros
+- Gestion des restes du frigo
+- Suggestion simple de repas à partir des restes
+- Saisie Apple Watch : calories, minutes, pas, distance, étages, heures debout
+- Mesures supplémentaires : poitrine, bras, cuisse
+- Toutes les fonctions V1.1 conservées
 
-## Mise à jour GitHub Pages
-Remplacer tous les anciens fichiers par le contenu de ce dossier, à la racine du dépôt.
+## GitHub Pages
+Déposer tous les fichiers à la racine du dépôt :
+Settings → Pages → main → /(root)

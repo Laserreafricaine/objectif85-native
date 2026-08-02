@@ -22,6 +22,34 @@
 <section id="todayPage" class="page active">
 <div class="week-strip" id="weekStrip"></div>
 
+<section class="dashboard-v2" id="dailyDashboard">
+  <article class="dash-card">
+    <span>🔥 Calories</span>
+    <strong id="dashCalories">0 / 2150 kcal</strong>
+    <div class="mini-progress"><i id="dashCaloriesBar"></i></div>
+    <small id="dashCaloriesRemain">2150 kcal restantes</small>
+  </article>
+  <article class="dash-card">
+    <span>🥩 Protéines</span>
+    <strong id="dashProtein">0 / 190 g</strong>
+    <div class="mini-progress"><i id="dashProteinBar"></i></div>
+    <small id="dashProteinRemain">190 g restantes</small>
+  </article>
+  <article class="dash-card">
+    <span>💧 Eau</span>
+    <strong id="dashWater">0 / 3 L</strong>
+    <div class="mini-progress"><i id="dashWaterBar"></i></div>
+    <small>objectif quotidien</small>
+  </article>
+  <article class="dash-card">
+    <span>👣 Pas</span>
+    <strong id="dashSteps">0 / 10 000</strong>
+    <div class="mini-progress"><i id="dashStepsBar"></i></div>
+    <small id="dashStepsRemain">10 000 pas restants</small>
+  </article>
+</section>
+
+
 <section class="hero objective-hero">
 <div>
 <span>MISSION PERSONNELLE</span>
@@ -38,6 +66,40 @@
 <section class="section">
 <div class="section-head"><div><span class="eyebrow">NUTRITION</span><h2>Repas du jour</h2></div><span id="cycleLabel" class="cycle-badge">J1/28</span></div>
 <div id="mealList"></div>
+</section>
+
+
+<section class="section">
+  <div class="section-head">
+    <div><span class="eyebrow">JOURNAL</span><h2>Ce que j’ai réellement mangé</h2></div>
+    <button class="small-gold-btn" id="addFoodButton">+ Ajouter</button>
+  </div>
+  <div class="meal-journal-tabs" id="mealJournalTabs">
+    <button data-meal="breakfast" class="active">Petit-déjeuner</button>
+    <button data-meal="lunch">Déjeuner</button>
+    <button data-meal="snack">Collation</button>
+    <button data-meal="dinner">Dîner</button>
+  </div>
+  <div id="mealJournalList"></div>
+  <div class="journal-total">
+    <span>Total du jour</span>
+    <strong id="journalDayTotal">0 kcal · 0 g protéines</strong>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="section-head">
+    <div><span class="eyebrow orange">SEMAINE 0</span><h2>Restes du frigo</h2></div>
+    <button class="small-gold-btn" id="addLeftoverButton">+ Ajouter</button>
+  </div>
+  <p class="muted">Liste indépendante du programme de 28 jours. Coche un aliment lorsqu’il est terminé.</p>
+  <div id="leftoversList"></div>
+  <div class="suggested-meal" id="suggestedMeal">
+    <span>Repas conseillé</span>
+    <strong id="suggestedMealTitle">Ajoute tes restes</strong>
+    <small id="suggestedMealMeta">L’application proposera une combinaison simple.</small>
+  </div>
 </section>
 
 <section class="section">
@@ -110,7 +172,12 @@
   </div>
 </section>
 
-<section class="section"><h2>Entrée du jour</h2><div class="form-grid" id="trackingForm"></div><button class="gold-btn" id="saveTracking">Enregistrer</button></section>
+<section class="section"><h2>Entrée du jour</h2><div class="form-grid" id="trackingForm"></div>
+<div class="form-grid extra-measures-static" id="extraMeasuresStatic">
+<div class="field"><label>Tour de poitrine (cm)</label><input type="number" step="0.1" data-key="chest"></div>
+<div class="field"><label>Tour de bras (cm)</label><input type="number" step="0.1" data-key="arm"></div>
+<div class="field"><label>Tour de cuisse (cm)</label><input type="number" step="0.1" data-key="thigh"></div>
+</div><button class="gold-btn" id="saveTracking">Enregistrer</button></section>
 <section class="metrics-grid">
 <div class="metric"><span>Poids actuel</span><strong id="currentWeight">93 kg</strong><small>Objectif 85 kg</small></div>
 <div class="metric"><span>Tour de taille</span><strong id="currentWaist">97 cm</strong><small>Objectif 89 cm</small></div>
@@ -118,6 +185,22 @@
 </section>
 <section class="section"><div class="chart-head"><h2>Poids</h2><span id="weightTrend">0 kg</span></div><svg id="weightChart" viewBox="0 0 360 170"></svg></section>
 <section class="section"><div class="chart-head"><h2>Tour de taille</h2><span id="waistTrend">0 cm</span></div><svg id="waistChart" viewBox="0 0 360 170"></svg></section>
+
+<section class="section">
+  <div class="section-head">
+    <div><span class="eyebrow green">APPLE WATCH</span><h2>Activité du jour</h2></div>
+  </div>
+  <div class="watch-grid">
+    <label class="field"><span>Calories actives</span><input id="watchMove" type="number" min="0" placeholder="611"></label>
+    <label class="field"><span>Minutes d’entraînement</span><input id="watchExercise" type="number" min="0" placeholder="84"></label>
+    <label class="field"><span>Pas</span><input id="watchSteps" type="number" min="0" placeholder="6092"></label>
+    <label class="field"><span>Distance (km)</span><input id="watchDistance" type="number" min="0" step="0.01" placeholder="7.23"></label>
+    <label class="field"><span>Étages</span><input id="watchFloors" type="number" min="0" placeholder="6"></label>
+    <label class="field"><span>Heures debout</span><input id="watchStand" type="number" min="0" placeholder="9"></label>
+  </div>
+  <button class="gold-btn" id="saveWatch">Enregistrer l’activité</button>
+</section>
+
 <section class="section"><div class="section-head"><div><span class="eyebrow orange">PERFORMANCES</span><h2>Dernières charges</h2></div></div><div id="performanceHistory"></div></section>
 </section>
 
@@ -143,6 +226,69 @@
 <button data-nav="shoppingPage"><span>🛒</span><small>Courses</small></button>
 <button data-nav="settingsPage"><span>⚙</span><small>Paramètres</small></button>
 </nav>
+</div>
+
+
+<div class="modal-v2 hidden" id="foodModal">
+  <div class="modal-card-v2">
+    <button class="modal-close-v2" id="foodModalClose">×</button>
+    <h2>Ajouter un aliment</h2>
+    <label>Repas
+      <select id="foodMeal">
+        <option value="breakfast">Petit-déjeuner</option>
+        <option value="lunch">Déjeuner</option>
+        <option value="snack">Collation</option>
+        <option value="dinner">Dîner</option>
+      </select>
+    </label>
+    <label>Aliment
+      <input id="foodName" type="text" placeholder="Ex. riz blanc">
+    </label>
+    <div class="modal-grid">
+      <label>Quantité (g)
+        <input id="foodQty" type="number" min="0" step="1" placeholder="150">
+      </label>
+      <label>Calories
+        <input id="foodCalories" type="number" min="0" step="1" placeholder="195">
+      </label>
+      <label>Protéines (g)
+        <input id="foodProtein" type="number" min="0" step="0.1" placeholder="4">
+      </label>
+      <label>Glucides (g)
+        <input id="foodCarbs" type="number" min="0" step="0.1" placeholder="42">
+      </label>
+      <label>Lipides (g)
+        <input id="foodFat" type="number" min="0" step="0.1" placeholder="1">
+      </label>
+    </div>
+    <button class="gold-btn" id="foodModalSave">Enregistrer</button>
+  </div>
+</div>
+
+<div class="modal-v2 hidden" id="leftoverModal">
+  <div class="modal-card-v2">
+    <button class="modal-close-v2" id="leftoverModalClose">×</button>
+    <h2>Ajouter un reste</h2>
+    <label>Nom
+      <input id="leftoverName" type="text" placeholder="Ex. épaule d’agneau">
+    </label>
+    <label>Catégorie
+      <select id="leftoverCategory">
+        <option value="protein">Protéine</option>
+        <option value="starch">Féculent</option>
+        <option value="vegetable">Légume</option>
+        <option value="dish">Plat préparé</option>
+        <option value="fruit">Fruit</option>
+      </select>
+    </label>
+    <label>Calories estimées pour la portion
+      <input id="leftoverCalories" type="number" min="0" step="1" placeholder="450">
+    </label>
+    <label>Protéines estimées (g)
+      <input id="leftoverProtein" type="number" min="0" step="0.1" placeholder="35">
+    </label>
+    <button class="gold-btn" id="leftoverModalSave">Enregistrer</button>
+  </div>
 </div>
 
 <script src="data.js"></script>

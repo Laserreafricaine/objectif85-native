@@ -1,7 +1,7 @@
 {
-  "name": "Objectif 85 — V1.1",
+  "name": "Objectif 85 — V2",
   "short_name": "Objectif85",
-  "description": "Version corrigée : poids dynamique, galerie ou caméra et affichage mobile verrouillé.",
+  "description": "Coach sport et nutrition avec journal alimentaire, restes, Apple Watch et évolution.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -15,7 +15,7 @@ function save(s){localStorage.setItem(STORAGE_KEY,JSON.stringify(s))}
 function settings(){return{...defaults,...(load().settings||{})}}
 function getDay(d=selectedDate){
   const s=load();
-  return s.days[keyFor(d)]||{meals:{},sports:{},series:{},weight:"",waist:"",steps:"",water:"",protein:"",sleep:""};
+  return s.days[keyFor(d)]||{meals:{},sports:{},series:{},foodLog:{breakfast:[],lunch:[],snack:[],dinner:[]},watch:{},weight:"",waist:"",chest:"",arm:"",thigh:"",steps:"",water:"",protein:"",sleep:""};
 }
 function setDay(data,d=selectedDate){const s=load();s.days[keyFor(d)]=data;save(s)}
 function cycleIndex(d){const start=new Date(2026,0,1);const n=Math.floor((new Date(d.getFullYear(),d.getMonth(),d.getDate())-start)/86400000);return((n%28)+28)%28}
@@ -61,7 +61,7 @@ function renderGoals(){
     <div class="goal-card"><span>🥩</span><strong>180–200 g</strong><small>protéines</small></div>
     <div class="goal-card"><span>😴</span><strong>7 h 30–8 h</strong><small>sommeil</small></div>`;
 }
-function renderToday(){
+function renderToday(){renderMealJournal();renderLeftovers();renderDailyDashboard();
   renderWeek();renderObjective();renderGoals();
   const idx=cycleIndex(selectedDate),data=getDay(),names=["Petit-déjeuner","Déjeuner","Collation","Dîner"],icons=["☀","🍗","🥛","🐟"];
   document.getElementById("cycleLabel").textContent=`J${idx+1}/28`;
@@ -119,8 +119,8 @@ function showPage(id){
 document.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.nav)));
 document.getElementById("todayBtn").addEventListener("click",()=>{selectedDate=new Date();showPage("todayPage");renderToday()});
 
-const trackFields=[["weight","Poids (kg)","0.1"],["waist","Tour de taille (cm)","0.1"],["steps","Pas","1"],["water","Eau (L)","0.1"],["protein","Protéines (g)","1"],["sleep","Sommeil (h)","0.25"]];
-function renderTracking(){
+const trackFields=[["weight","Poids (kg)","0.1"],["waist","Tour de taille (cm)","0.1"],["chest","Tour de poitrine (cm)","0.1"],["arm","Tour de bras (cm)","0.1"],["thigh","Tour de cuisse (cm)","0.1"],["steps","Pas","1"],["water","Eau (L)","0.1"],["protein","Protéines (g)","1"],["sleep","Sommeil (h)","0.25"]];
+function renderTracking(){renderWatch();
   const d=getDay(),f=document.getElementById("trackingForm");f.innerHTML="";
   trackFields.forEach(([k,l,s])=>{const x=document.createElement("div");x.className="field";x.innerHTML=`<label>${l}</label><input type="number" step="${s}" data-key="${k}" value="${d[k]||""}">`;f.appendChild(x)});
   updateSummary();renderPerformances();
@@ -275,6 +275,171 @@ document.querySelectorAll("[data-photo-type]").forEach(input=>input.addEventList
 document.getElementById("compareType")?.addEventListener("change",renderCompareOptions);
 document.getElementById("compareBefore")?.addEventListener("change",renderComparison);
 document.getElementById("compareAfter")?.addEventListener("change",renderComparison);
+
+
+// ===================== V2 : journal alimentaire =====================
+let activeJournalMeal="breakfast";
+const mealLabels={breakfast:"Petit-déjeuner",lunch:"Déjeuner",snack:"Collation",dinner:"Dîner"};
+
+function ensureFoodLog(day){
+  day.foodLog=day.foodLog||{breakfast:[],lunch:[],snack:[],dinner:[]};
+  Object.keys(mealLabels).forEach(k=>day.foodLog[k]=day.foodLog[k]||[]);
+  return day;
+}
+function dayNutritionTotals(day=getDay()){
+  day=ensureFoodLog(day);
+  const items=Object.values(day.foodLog).flat();
+  return items.reduce((a,x)=>({
+    calories:a.calories+Number(x.calories||0),
+    protein:a.protein+Number(x.protein||0),
+    carbs:a.carbs+Number(x.carbs||0),
+    fat:a.fat+Number(x.fat||0)
+  }),{calories:0,protein:0,carbs:0,fat:0});
+}
+function targets(){
+  return {calories:2150,protein:190,water:3,steps:10000};
+}
+function pct(value,target){return Math.max(0,Math.min(100,target?value/target*100:0))}
+function renderDailyDashboard(){
+  const day=getDay(),tot=dayNutritionTotals(day),t=targets();
+  const steps=Number(day.watch?.steps||day.steps||0),water=Number(day.water||0);
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val};
+  const bar=(id,val)=>{const el=document.getElementById(id);if(el)el.style.width=val+"%"};
+  set("dashCalories",`${Math.round(tot.calories)} / ${t.calories} kcal`);
+  set("dashCaloriesRemain",`${Math.max(0,Math.round(t.calories-tot.calories))} kcal restantes`);
+  bar("dashCaloriesBar",pct(tot.calories,t.calories));
+  set("dashProtein",`${tot.protein.toFixed(0)} / ${t.protein} g`);
+  set("dashProteinRemain",`${Math.max(0,t.protein-tot.protein).toFixed(0)} g restantes`);
+  bar("dashProteinBar",pct(tot.protein,t.protein));
+  set("dashWater",`${water.toFixed(1).replace(".0","")} / ${t.water} L`);
+  bar("dashWaterBar",pct(water,t.water));
+  set("dashSteps",`${Math.round(steps).toLocaleString("fr-FR")} / ${t.steps.toLocaleString("fr-FR")}`);
+  set("dashStepsRemain",`${Math.max(0,t.steps-steps).toLocaleString("fr-FR")} pas restants`);
+  bar("dashStepsBar",pct(steps,t.steps));
+}
+function renderMealJournal(){
+  const root=document.getElementById("mealJournalList");if(!root)return;
+  const day=ensureFoodLog(getDay()),items=day.foodLog[activeJournalMeal];
+  root.innerHTML=items.length?items.map(item=>`
+    <div class="journal-item">
+      <div><strong>${item.name}</strong><small>${item.qty?item.qty+" g · ":""}${Number(item.protein||0).toFixed(1)} g protéines</small></div>
+      <b>${Math.round(item.calories||0)} kcal</b>
+      <button data-food-delete="${item.id}">×</button>
+    </div>`).join(""):'<p class="muted">Aucun aliment enregistré pour ce repas.</p>';
+  root.querySelectorAll("[data-food-delete]").forEach(b=>b.addEventListener("click",()=>deleteFood(b.dataset.foodDelete)));
+  const tot=dayNutritionTotals(day);
+  const totalEl=document.getElementById("journalDayTotal");
+  if(totalEl)totalEl.textContent=`${Math.round(tot.calories)} kcal · ${tot.protein.toFixed(0)} g protéines`;
+  renderDailyDashboard();
+}
+function deleteFood(id){
+  const day=ensureFoodLog(getDay());
+  Object.keys(day.foodLog).forEach(k=>day.foodLog[k]=day.foodLog[k].filter(x=>x.id!==id));
+  setDay(day);renderMealJournal();
+}
+function openFoodModal(){
+  document.getElementById("foodMeal").value=activeJournalMeal;
+  ["foodName","foodQty","foodCalories","foodProtein","foodCarbs","foodFat"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("foodModal").classList.remove("hidden");
+}
+function saveFoodFromModal(){
+  const name=document.getElementById("foodName").value.trim();
+  if(!name){alert("Indique le nom de l’aliment.");return}
+  const day=ensureFoodLog(getDay()),meal=document.getElementById("foodMeal").value;
+  day.foodLog[meal].push({
+    id:Date.now()+"-"+Math.random().toString(16).slice(2),
+    name,qty:Number(document.getElementById("foodQty").value||0),
+    calories:Number(document.getElementById("foodCalories").value||0),
+    protein:Number(document.getElementById("foodProtein").value||0),
+    carbs:Number(document.getElementById("foodCarbs").value||0),
+    fat:Number(document.getElementById("foodFat").value||0)
+  });
+  setDay(day);activeJournalMeal=meal;
+  document.getElementById("foodModal").classList.add("hidden");
+  document.querySelectorAll("#mealJournalTabs button").forEach(b=>b.classList.toggle("active",b.dataset.meal===activeJournalMeal));
+  renderMealJournal();
+}
+document.getElementById("addFoodButton")?.addEventListener("click",openFoodModal);
+document.getElementById("foodModalClose")?.addEventListener("click",()=>document.getElementById("foodModal").classList.add("hidden"));
+document.getElementById("foodModalSave")?.addEventListener("click",saveFoodFromModal);
+document.querySelectorAll("#mealJournalTabs button").forEach(b=>b.addEventListener("click",()=>{
+  activeJournalMeal=b.dataset.meal;
+  document.querySelectorAll("#mealJournalTabs button").forEach(x=>x.classList.toggle("active",x===b));
+  renderMealJournal();
+}));
+
+// ===================== V2 : restes =====================
+function leftoversState(){
+  const s=load();
+  if(!Array.isArray(s.leftovers))s.leftovers=[];
+  return s;
+}
+function renderLeftovers(){
+  const root=document.getElementById("leftoversList");if(!root)return;
+  const s=leftoversState();
+  root.innerHTML=s.leftovers.length?s.leftovers.map(x=>`
+    <label class="leftover-row ${x.done?"done":""}">
+      <input type="checkbox" data-leftover-id="${x.id}" ${x.done?"checked":""}>
+      <span>${x.name}<small>${x.category} · ${Math.round(x.calories||0)} kcal</small></span>
+      <button type="button" data-leftover-delete="${x.id}">×</button>
+    </label>`).join(""):'<p class="muted">Aucun reste enregistré.</p>';
+  root.querySelectorAll("[data-leftover-id]").forEach(c=>c.addEventListener("change",()=>{
+    const st=leftoversState(),item=st.leftovers.find(x=>x.id===c.dataset.leftoverId);if(item)item.done=c.checked;save(st);renderLeftovers();
+  }));
+  root.querySelectorAll("[data-leftover-delete]").forEach(b=>b.addEventListener("click",e=>{
+    e.preventDefault();const st=leftoversState();st.leftovers=st.leftovers.filter(x=>x.id!==b.dataset.leftoverDelete);save(st);renderLeftovers();
+  }));
+  renderSuggestedMeal();
+}
+function renderSuggestedMeal(){
+  const items=leftoversState().leftovers.filter(x=>!x.done);
+  const protein=items.find(x=>x.category==="protein");
+  const starch=items.find(x=>x.category==="starch");
+  const veg=items.find(x=>x.category==="vegetable");
+  const dish=items.find(x=>x.category==="dish");
+  let title="Ajoute tes restes",meta="L’application proposera une combinaison simple.";
+  if(protein||dish){
+    const chosen=[protein||dish,starch,veg].filter(Boolean);
+    title=chosen.map(x=>x.name).join(" + ");
+    meta=`≈ ${Math.round(chosen.reduce((a,x)=>a+Number(x.calories||0),0))} kcal · ${chosen.reduce((a,x)=>a+Number(x.protein||0),0).toFixed(0)} g protéines`;
+  }
+  const t=document.getElementById("suggestedMealTitle"),m=document.getElementById("suggestedMealMeta");
+  if(t)t.textContent=title;if(m)m.textContent=meta;
+}
+function openLeftoverModal(){
+  ["leftoverName","leftoverCalories","leftoverProtein"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("leftoverModal").classList.remove("hidden");
+}
+function saveLeftover(){
+  const name=document.getElementById("leftoverName").value.trim();if(!name){alert("Indique le nom du reste.");return}
+  const s=leftoversState();s.leftovers.push({
+    id:Date.now()+"-"+Math.random().toString(16).slice(2),
+    name,category:document.getElementById("leftoverCategory").value,
+    calories:Number(document.getElementById("leftoverCalories").value||0),
+    protein:Number(document.getElementById("leftoverProtein").value||0),done:false
+  });save(s);document.getElementById("leftoverModal").classList.add("hidden");renderLeftovers();
+}
+document.getElementById("addLeftoverButton")?.addEventListener("click",openLeftoverModal);
+document.getElementById("leftoverModalClose")?.addEventListener("click",()=>document.getElementById("leftoverModal").classList.add("hidden"));
+document.getElementById("leftoverModalSave")?.addEventListener("click",saveLeftover);
+
+// ===================== V2 : Apple Watch =====================
+function renderWatch(){
+  const d=getDay(),w=d.watch||{};
+  const mapping={watchMove:"move",watchExercise:"exercise",watchSteps:"steps",watchDistance:"distance",watchFloors:"floors",watchStand:"stand"};
+  Object.entries(mapping).forEach(([id,key])=>{const el=document.getElementById(id);if(el)el.value=w[key]??""});
+}
+document.getElementById("saveWatch")?.addEventListener("click",()=>{
+  const d=getDay();d.watch=d.watch||{};
+  d.watch.move=Number(document.getElementById("watchMove").value||0);
+  d.watch.exercise=Number(document.getElementById("watchExercise").value||0);
+  d.watch.steps=Number(document.getElementById("watchSteps").value||0);
+  d.watch.distance=Number(document.getElementById("watchDistance").value||0);
+  d.watch.floors=Number(document.getElementById("watchFloors").value||0);
+  d.watch.stand=Number(document.getElementById("watchStand").value||0);
+  d.steps=d.watch.steps;
+  setDay(d);renderDailyDashboard();alert("Activité enregistrée.");
+});
 
 if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js"));
 renderToday();
